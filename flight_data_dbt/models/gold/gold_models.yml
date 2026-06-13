@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: dim_spatial_airspaces
+    description: "Spatial lookup table containing real irregular geographic airspace shapes."
+    
+  - name: fct_flight_snapshots
+    description: "Granular historical telemetry fact table. Highly partitioned and clustered."
+    config:
+      materialized: incremental
+      incremental_strategy: merge
+      unique_key: snapshot_id
+      partition_by:
+        field: flight_date
+        data_type: date
+        granularity: day
+      cluster_by: ["airspace_name", "icao24"]
+    columns:
+      - name: snapshot_id
+        tests:
+          - unique
+          - not_null
+
+  - name: agg_hourly_traffic_heatmap
+    description: "Pre-aggregated grid-block table optimized specifically for the PowerBI heatmap."
+    config:
+      materialized: table
+      partition_by:
+        field: snapshot_date
+        data_type: date
+        granularity: day
+      cluster_by: ["airspace_name"]
+
+  - name: fct_active_flight_inventory
+    description: "High-speed real-time table filtering down to show only active planes in the sky right now."
+    config:
+      materialized: table
+
+  - name: agg_daily_fleet_utilization
+    description: "Rolled-up executive metrics tracking airline carrier activity and active airframe volume."
+    config:
+      materialized: incremental
+      incremental_strategy: merge
+      unique_key: aggregation_id
+      partition_by:
+        field: flight_date
+        data_type: date
+        granularity: day

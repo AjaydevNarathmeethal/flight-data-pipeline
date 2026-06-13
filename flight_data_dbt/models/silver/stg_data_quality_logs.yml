@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: stg_data_quality_logs
+    description: "Quarantine table logging malformed flight records (null keys, missing geospatial coordinates, or bad timestamp formats) for engineering audit trails."
+    config:
+      materialized: incremental
+      incremental_strategy: merge
+      partition_by:
+        field: log_date
+        data_type: date
+        granularity: day
+      cluster_by: ["primary_error_reason", "icao24"]
+    columns:
+      - name: log_id
+        description: "Unique surrogate hash of the raw record to track across runs."
+        tests:
+          - unique
+          - not_null
+      - name: primary_error_reason
+        description: "The main structural reason why this record failed quality checks."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['MISSING_AIRCRAFT_ID', 'MISSING_GEOSPATIAL_COORDINATES', 'INVALID_METADATA_TIMESTAMP']
+      - name: log_date
+        description: "The partition date derived from when the file hit GCS."

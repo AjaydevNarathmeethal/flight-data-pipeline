@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: flight-data-pipeline-497203 # Your GCP Project ID
+    schema: flight_bronze
+    description: "Raw flight data ingested from GCS via Hive-partitioned external tables"
+    tables:
+      - name: gcs_raw_data
+        description: "External table pointing to NDJSON snapshots in GCS"
+        columns:
+          - name: icao24
+            description: "Unique ICAO 24-bit address"
+          - name: callsign
+            description: "Flight callsign"
+          - name: time_position
+            description: "Unix timestamp (seconds) for the last position update."
+          - name: origin_country
+            description: "country of origin of the flight."
+          - name: _gcs_loaded_at
+            description: "Unix epoch timestamp when data was loaded to GCS"   

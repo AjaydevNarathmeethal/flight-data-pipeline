@@ -1,0 +1,46 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+
+
+# env files
+.env
+
+# gcp creds
+gcp_cred/
+secrets/
+
+
+opensky_extraction_dag.py
+
+
+# --- PYTHON ENVIRONMENT ---
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+
+
+# --- LOCAL METADATA & RUNTIMES ---
+*.db                   # Blocks default local SQLite databases (airflow.db)
+airflow.db-journal
+standalone_admin_password.txt
+*/logs/                # Prevents local execution logs from uploading
+logs/*
+plugins/__pycache__/
+streaming-data-pipeline/logs
+
+# --- CRITICAL INFRASTRUCTURE & CREDENTIALS ---
+airflow.cfg
+webserver_config.py
+*.key
+*.pem
+*.json                 # Block if you store Google Cloud service account keys locally
+.env                   # Local environment variable files
